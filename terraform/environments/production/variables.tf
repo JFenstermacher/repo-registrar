@@ -5,3 +5,9 @@ variable "git_sha" {
     A new version of the lambda will be created, and CodeDeploy will handle the actual rolling over of the lambda.
     EOT
 }
+
+variable "vpc_id" {
+  type        = string
+  description = "VPC ID."
+  default     = "vpc-a8f360d3"
+}

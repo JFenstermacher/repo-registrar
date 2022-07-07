@@ -40,7 +40,15 @@ push-api:
 		-w /usr/src \
 		${S3_PUSH_IMAGE} s3 cp _output/${API_NAME}.zip s3://${ARTIFACTS_BUCKET}/${TEAM}/${SERVICE}/${API_NAME}/${GIT_SHA}.zip
 
-apply:
+terraform/init:
+	docker run \
+		-v ${HOME}/.aws:/root/.aws \
+		-v ${ROOT_DIRECTORY}:/usr/src \
+		-w /usr/src \
+		-e TF_VAR_git_sha=${GIT_SHA} \
+		${TERRAFORM_IMAGE} -chdir=${TERRAFORM_ENV_DIR} init
+
+terraform/apply:
 	docker run \
 		-v ${HOME}/.aws:/root/.aws \
 		-v ${ROOT_DIRECTORY}:/usr/src \
@@ -48,7 +56,7 @@ apply:
 		-e TF_VAR_git_sha=${GIT_SHA} \
 		${TERRAFORM_IMAGE} -chdir=${TERRAFORM_ENV_DIR} apply -auto-approve
 
-destroy:
+terrafrom/destroy:
 	docker run \
 		-v ${HOME}/.aws:/root/.aws \
 		-v ${ROOT_DIRECTORY}:/usr/src \

@@ -56,7 +56,7 @@ terraform/apply:
 		-e TF_VAR_git_sha=${GIT_SHA} \
 		${TERRAFORM_IMAGE} -chdir=${TERRAFORM_ENV_DIR} apply -auto-approve
 
-terrafrom/destroy:
+terraform/destroy:
 	docker run \
 		-v ${HOME}/.aws:/root/.aws \
 		-v ${ROOT_DIRECTORY}:/usr/src \

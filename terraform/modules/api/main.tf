@@ -9,9 +9,12 @@ module "base_label" {
   source  = "cloudposse/label/null"
   version = "0.25.0"
 
-  namespace = local.team
-  name      = local.service
-  stage     = var.stage
+  namespace   = local.team
+  name        = local.service
+  stage       = var.stage
+  environment = var.environment
+
+  label_order = ["namespace", "stage", "name"]
 }
 
 module "lambda_api" {
@@ -37,31 +40,28 @@ module "lambda" {
   context = module.lambda_api.context
 }
 
-module "security_group" {
-  source  = "cloudposse/security-group/aws"
-  version = "1.0.1"
+module "alb" {
+  source  = "cloudposse/alb/aws"
+  version = "1.4.0"
 
-  allow_all_egress = true
-  vpc_id           = var.vpc_id
+  http_ingress_cidr_blocks  = ["0.0.0.0/0"]
+  #http_redirect             = true
+  #https_enabled             = true
+  #https_ingress_cidr_blocks = ["0.0.0.0/0"]
+  target_group_target_type  = "lambda"
+  subnet_ids                = var.subnet_ids
+  vpc_id                    = var.vpc_id
 
-  rules = [
-    {
-      key         = "HTTPS"
-      type        = "ingress"
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-      description = "Allow HTTPS traffic"
-    },
-    {
-      key         = "HTTP"
-      type        = "ingress"
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-      description = "Allow HTTP traffic"
-    }
-  ]
+  context = module.base_label.context
+}
+
+module "alb_ingress" {
+  source  = "cloudposse/alb-ingress/aws"
+  version = "0.24.3"
+
+  target_group_arn              = module.alb.default_target_group_arn
+  unauthenticated_listener_arns = [module.alb.http_listener_arn]
+  vpc_id                        = var.vpc_id
+
+  context = module.base_label.context
 }

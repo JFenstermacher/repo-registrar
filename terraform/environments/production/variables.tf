@@ -11,3 +11,14 @@ variable "vpc_id" {
   description = "VPC ID."
   default     = "vpc-a8f360d3"
 }
+
+variable "subnet_ids" {
+  type        = list(string)
+  description = "Subnet IDs."
+
+  default = [
+    "subnet-223d070d", # us-east-1a
+    "subnet-e40cc0ae", # us-east-1b
+    "subnet-35a09868"  # us-east-1c
+  ]
+}

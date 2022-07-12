@@ -55,13 +55,15 @@ module "alb" {
   context = module.base_label.context
 }
 
-module "alb_ingress" {
-  source  = "cloudposse/alb-ingress/aws"
-  version = "0.24.3"
+resource "aws_lambda_permission" "this" {
+  statement_id  = "AllowExecutionFromLB"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda.arn
+  prinicipal    = "elasticloadbalancing.amazonaws.com"
+  source_arn    = module.alb.default_target_group_arn
+}
 
-  target_group_arn              = module.alb.default_target_group_arn
-  unauthenticated_listener_arns = [module.alb.http_listener_arn]
-  vpc_id                        = var.vpc_id
-
-  context = module.base_label.context
+resource "aws_lb_target_group_attachment" "this" {
+  target_group_arn = module.alb.default_target_group_arn
+  target_id        = module.lambda.arn
 }

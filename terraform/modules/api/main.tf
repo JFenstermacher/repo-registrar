@@ -44,13 +44,17 @@ module "alb" {
   source  = "cloudposse/alb/aws"
   version = "1.4.0"
 
-  http_ingress_cidr_blocks  = ["0.0.0.0/0"]
-  #http_redirect             = true
-  #https_enabled             = true
-  #https_ingress_cidr_blocks = ["0.0.0.0/0"]
-  target_group_target_type  = "lambda"
-  subnet_ids                = var.subnet_ids
-  vpc_id                    = var.vpc_id
+  
+  access_logs_enabled                             = false
+  alb_access_logs_s3_bucket_force_destroy         = true
+  alb_access_logs_s3_bucket_force_destroy_enabled = true
+  http_ingress_cidr_blocks                        = ["0.0.0.0/0"]
+  #http_redirect                                  = true
+  #https_enabled                                  = true
+  #https_ingress_cidr_blocks                      = ["0.0.0.0/0"]
+  target_group_target_type                        = "lambda"
+  subnet_ids                                      = var.subnet_ids
+  vpc_id                                          = var.vpc_id
 
   context = module.base_label.context
 }

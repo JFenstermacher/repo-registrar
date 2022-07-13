@@ -31,7 +31,7 @@ module "lambda" {
   version = "0.4.1"
 
   function_name = module.lambda_api.id
-  handler       = module.lambda_api.id
+  handler       = local.api_name
   runtime       = "go1.x"
   s3_bucket     = local.bucket_name
   s3_key        = "${local.team}/${local.service}/${local.api_name}/${var.git_sha}.zip"
@@ -59,7 +59,7 @@ resource "aws_lambda_permission" "this" {
   statement_id  = "AllowExecutionFromLB"
   action        = "lambda:InvokeFunction"
   function_name = module.lambda.arn
-  prinicipal    = "elasticloadbalancing.amazonaws.com"
+  principal     = "elasticloadbalancing.amazonaws.com"
   source_arn    = module.alb.default_target_group_arn
 }
 

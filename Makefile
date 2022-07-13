@@ -37,7 +37,7 @@ build: build-api
 build-api:
 	@echo Building ${API_NAME} zip
 	@mkdir -p ${OUTPUT_DIRECTORY}
-	go build -o ${ROOT_DIRECTORY}/_output/${API_NAME} ${ROOT_DIRECTORY}/cmd/api
+	CGO_ENABLED=0 GOOS=linux go build -o ${ROOT_DIRECTORY}/_output/${API_NAME} ${ROOT_DIRECTORY}/cmd/api
 	@cd ${OUTPUT_DIRECTORY} && zip ${API_NAME}.zip ${API_NAME}
 	@rm -rf ${OUTPUT_DIRECTORY}/${API_NAME}
 

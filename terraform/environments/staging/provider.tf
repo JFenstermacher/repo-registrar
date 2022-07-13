@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "jfenstermacher-terraform"
-    key    = "production/repo-registrar"
+    key    = "staging/repo-registrar"
     region = "us-east-1"
   }
 
